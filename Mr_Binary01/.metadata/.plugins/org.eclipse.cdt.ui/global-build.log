@@ -1,0 +1,28 @@
+21:17:09 **** Incremental Build of configuration Debug for project STM32F407VG ****
+make -j20 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../USB_HOST/App -I../USB_HOST/Target -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Middlewares/ST/STM32_USB_Host_Library/Core/Inc -I../Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Inc -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "STM32F407VG.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\david\projects\summer_2025\Mr_Binary01\STM32F407VG\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32F407VG.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: STM32F407VG.elf
+ 
+arm-none-eabi-size  STM32F407VG.elf 
+arm-none-eabi-objdump -h -S STM32F407VG.elf  > "STM32F407VG.list"
+   text	   data	    bss	    dec	    hex	filename
+  35716	    124	   4124	  39964	   9c1c	STM32F407VG.elf
+Finished building: default.size.stdout
+ 
+Finished building: STM32F407VG.list
+ 
+21:17:21 **** Incremental Build of configuration Debug for project STM32F407VG ****
+make -j20 all 
+arm-none-eabi-size  STM32F407VG.elf 
+   text	   data	    bss	    dec	    hex	filename
+  35716	    124	   4124	  39964	   9c1c	STM32F407VG.elf
+Finished building: default.size.stdout
+ 
+21:19:12 **** Incremental Build of configuration Debug for project STM32F407VG ****
+make -j20 all 
+arm-none-eabi-size  STM32F407VG.elf 
+   text	   data	    bss	    dec	    hex	filename
+  35716	    124	   4124	  39964	   9c1c	STM32F407VG.elf
+Finished building: default.size.stdout
+ 
