@@ -19,7 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usb_host.h"
-#include "mpu_6500.h"
+#include "mpu6500.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -112,9 +112,9 @@ int main(void)
   {
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
-    HAL_GPIO_WritePin(GPIOD, LD4_Pin, 1);
+    HAL_GPIO_WritePin(GPIOD, LD4_Pin, GPIO_PIN_SET);
     HAL_Delay(1000);
-    HAL_GPIO_WritePin(GPIOD, LD4_Pin, 0);
+    HAL_GPIO_WritePin(GPIOD, LD4_Pin, GPIO_PIN_RESET);
     HAL_Delay(1000);
     /* USER CODE BEGIN 3 */
   }

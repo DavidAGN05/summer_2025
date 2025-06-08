@@ -39,7 +39,6 @@ add_executable(${CMAKE_PROJECT_NAME})
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
-add_subdirectory(invensense-imu)
 
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
@@ -48,11 +47,15 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
+    invensense-imu/src/invensense_imu.cpp
+    invensense-imu/src/mpu6500.cpp
+    # Add any other needed .cpp files from invensense-imu/src
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+    invensense-imu/src
+    invensense-imu/core/include
     # Add user defined include paths
 )
 
@@ -64,6 +67,5 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
-    invensense-imu
     # Add user defined libraries
 )
