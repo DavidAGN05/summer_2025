@@ -21,6 +21,7 @@
 #include "i2c.h"
 #include "i2s.h"
 #include "spi.h"
+#include "stm32f4xx_hal_i2c.h"
 #include "usb_host.h"
 #include "gpio.h"
 
@@ -48,6 +49,17 @@
 
 /* USER CODE BEGIN PV */
 
+int16_t Accel_X_RAW = 0;
+int16_t Accel_Y_RAW = 0;
+int16_t Accel_Z_RAW = 0;
+int16_t Gyro_X_RAW = 0;
+int16_t Gyro_Y_RAW = 0;
+int16_t Gyro_Z_RAW = 0;
+
+float Gx = 0.0f;
+float Gy = 0.0f;
+float Gz = 0.0f;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -61,6 +73,65 @@ void MX_USB_HOST_Process(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+#define MPU6500_ADDR 0xD0
+
+#define GYRO_CONFIG 0x1B
+#define ACCEL_CONFIG 0x1C
+#define ACCEL_XOUT_H 0x3B
+#define ACCEL_YOUT_H 0x3D
+#define ACCEL_ZOUT_H 0x3F
+#define TEMP_OUT_H 0x41
+#define GYRO_XOUT_H 0x43
+#define GYRO_YOUT_H 0x45
+#define GYRO_ZOUT_H 0x47
+#define PWR_MGMT_1_REG 0x6B
+#define WHO_AM_I 0x75
+
+
+
+void MPU6500_Init(void)
+{
+    uint8_t check;
+    uint8_t Data;
+
+    // Check WHO_AM_I register
+    HAL_I2C_Mem_Read(&hi2c1, MPU6500_ADDR, WHO_AM_I, 1, &check, 1, 1000);
+    if (check == 0x68) // 0x68 is the default WHO_AM_I value for MPU6500
+    {
+        // Wake up the MPU6500 (clear sleep bit)
+        Data = 0x00;
+        HAL_I2C_Mem_Write(&hi2c1, MPU6500_ADDR, PWR_MGMT_1_REG, 1, &Data, 1, 1000);
+
+        // Optionally, set accelerometer and gyro config here
+        // Data = 0x00; // ±2g
+        // HAL_I2C_Mem_Write(&hi2c1, MPU6500_ADDR, ACCEL_CONFIG, 1, &Data, 1, 1000);
+        // Data = 0x00; // ±250°/s
+        // HAL_I2C_Mem_Write(&hi2c1, MPU6500_ADDR, GYRO_CONFIG, 1, &Data, 1, 1000);
+    }
+}
+
+void MPU6500_Read_Accel(void)
+{
+    uint8_t Rec_Data[6];
+    HAL_I2C_Mem_Read(&hi2c1, MPU6500_ADDR, ACCEL_XOUT_H, 1, Rec_Data, 6, 1000);
+
+    Accel_X_RAW = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
+    Accel_Y_RAW = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
+    Accel_Z_RAW = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
+}
+void MPU6500_Read_Gyro(void)
+{
+    uint8_t Rec_Data[6];
+    HAL_I2C_Mem_Read(&hi2c1, MPU6500_ADDR, GYRO_XOUT_H, 1, Rec_Data, 6, 1000);
+
+    Gyro_X_RAW = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
+    Gyro_Y_RAW = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
+    Gyro_Z_RAW = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
+
+    Gx = Gyro_X_RAW / 131.0;
+    Gy = Gyro_Y_RAW / 131.0;
+    Gz = Gyro_Z_RAW / 131.0;
+}
 /* USER CODE END 0 */
 
 /**
@@ -99,14 +170,18 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
-
+  MPU6500_Init();
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
     MX_USB_HOST_Process();
+ 
+    MPU6500_Read_Accel();
+    MPU6500_Read_Gyro();
 
+    HAL_Delay(100); //Read at 10 Hz
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
